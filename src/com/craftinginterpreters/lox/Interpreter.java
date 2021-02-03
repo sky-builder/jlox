@@ -3,7 +3,6 @@ import java.util.List;
 
 class Interpreter implements Expr.Visitor<Object>,
         Stmt.Visitor<Void> {
-    private Environment environment = new Environment();
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         Object value = null;
@@ -29,6 +28,8 @@ class Interpreter implements Expr.Visitor<Object>,
     private void execute(Stmt stmt) {
         stmt.accept(this);
     }
+    private Environment environment = new Environment();
+
     void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement : statements) {
@@ -38,6 +39,7 @@ class Interpreter implements Expr.Visitor<Object>,
             Lox.runtimeError(error);
         }
     }
+
 
 //    void interpret(Expr expression) {
 //        try {
@@ -150,6 +152,10 @@ class Interpreter implements Expr.Visitor<Object>,
 
         // Unreachable.
         return null;
+    }
+    @Override
+    public Object visitVariableExpr(Expr.Variable expr) {
+        return environment.get(expr.name);
     }
 }
 
